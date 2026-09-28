@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>SariaShop</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -13,16 +13,34 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SPTarkov.Common" Version="4.0.11" />
-    <PackageReference Include="SPTarkov.DI" Version="4.0.11" />
-    <PackageReference Include="SPTarkov.Server.Core" Version="4.0.11" />
+    <PackageReference Include="SPTarkov.Common" Version="4.1.2" />
+    <PackageReference Include="SPTarkov.DI" Version="4.1.2" />
+    <PackageReference Include="SPTarkov.Server.Core" Version="4.1.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Models\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Build\**" />
+    <Content Remove="Build\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ModAsset Include="Assets\**\*" />
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)\Build\SPT\user\mods\Saria\$(TargetFileName)&quot;" />
+    <PropertyGroup>
+      <ModOutDir>$(ProjectDir)Build\SPT_Runtime\user\mods\Saria\</ModOutDir>
+    </PropertyGroup>
+
+    <MakeDir Directories="$(ModOutDir)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModOutDir)" />
+    <Copy SourceFiles="$(ProjectDir)config.json" DestinationFolder="$(ModOutDir)" />
+    <Copy
+      SourceFiles="@(ModAsset)"
+      DestinationFiles="@(ModAsset->'$(ModOutDir)Assets\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 </Project>

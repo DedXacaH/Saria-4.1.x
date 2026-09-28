@@ -2,20 +2,21 @@ using System.Reflection;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Server;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Services;
 using Path = System.IO.Path;
 
 namespace SariaShop.Helpers;
 
-[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
-public class SariaHelpers(DatabaseService databaseService, ModHelper modHelper)
+[Injectable(TypePriority = OnLoadOrder.TraderRegistration)]
+public class SariaHelpers(TemplateTable templateTable, ModHelper modHelper)
 {
     public TemplateItem GetItemInTables(string itemId)
     {
-        var tables = databaseService.GetTables();
-        var item = tables.Templates.Items[itemId];
+        var item = templateTable.Items[itemId];
 
         return item;
     }
